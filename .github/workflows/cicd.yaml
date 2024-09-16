@@ -27,7 +27,7 @@ jobs:
         id: parseMatrix
         run: |
           if [ "${{ inputs.rebuild-options }}" = "rebuild-all" ]; then
-            matrix="[\"service1\", \"service2\"]"
+            matrix="[\"service1\",\"service2\"]"
             echo "matrix=${{ inputs.matrix }}" >> $GITHUB_OUTPUT
           else
             echo "matrix=${{ inputs.matrix }}" >> $GITHUB_OUTPUT
