@@ -13,9 +13,9 @@ jobs:
     name: Check matrix works
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(inputs.matrix) }}
+      matrix:
+        service: ${{ fromJSON(inputs.matrix) }}
     steps:
       - name: Check matrix
         run: |
-          echo "Matrix: ${{ matrix }}"
           echo "Matrix.service: ${{ matrix.service }}"
