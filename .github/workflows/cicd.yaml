@@ -21,21 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.parseMatrix.outputs.matrix }}
+
     steps:
       - name: Parse matrix
         id: parseMatrix
         run: |
           if [ "${{ inputs.rebuild-options }}" = "rebuild-all" ]; then
             matrix="[\"service1\", \"service2\"]"
-            echo "::set-output name=matrix::${matrix}"
-            for service in $matrix; do
-              echo "::set-output name=service::true"
-            done
+            echo "matrix=${{ inputs.matrix }}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=matrix::${{ inputs.matrix }}"
-            for service in ${{ inputs.matrix }}; do
-              echo "::set-output name=service::true"
-            done
+            echo "matrix=${{ inputs.matrix }}" >> $GITHUB_OUTPUT
           fi
 
   check_parse_outputs:
