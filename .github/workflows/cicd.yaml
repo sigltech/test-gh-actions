@@ -4,13 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       matrix:
-        description: 'The matrix of services to deploy'
+        description: 'services to deploy, as an array like this: ["service1", "service2"]'
         required: true
         type: string
       test-bool:
-        description: 'Whether to run the test'
+        description: 'Rebuild changeset'
         required: true
         type: boolean
+        default: true
+      rebuild-all:
+        description: 'Rebuild all services'
+        required: true
+        type: boolean
+        default: false
 jobs:
   check_matrix_works:
     name: Check matrix works
