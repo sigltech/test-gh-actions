@@ -7,16 +7,13 @@ on:
         description: 'services to deploy, as an array like this: ["service1", "service2"]. Must not be empty if rebuild changeset is selected'
         required: false
         type: string
-      test-bool:
-        description: 'Rebuild changeset'
-        required: true
-        type: boolean
-        default: false
-      rebuild-all:
-        description: 'Rebuild all services'
-        required: true
-        type: boolean
-        default: false
+      rebuild-options:
+        description: 'Whether to rebuild all services or only the ones that changed'
+        required: false
+        type: choice
+        options:
+          - 'rebuild-all'
+          - 'rebuild-changeset'
 jobs:
 
   parseMatrix:
@@ -28,7 +25,7 @@ jobs:
       - name: Parse matrix
         id: parseMatrix
         run: |
-          if [ "${{ inputs.rebuild-all }}" = "true" ]; then
+          if [ "${{ inputs.rebuild-options }}" = "rebuild-all" ]; then
             matrix="[\"service1\", \"service2\"]"
             echo "::set-output name=matrix::${matrix}"
             for service in $matrix; do
