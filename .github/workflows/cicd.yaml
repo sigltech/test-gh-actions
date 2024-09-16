@@ -1,0 +1,21 @@
+name: CICD Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      matrix:
+        description: 'The matrix of services to deploy'
+        required: true
+        type: string
+
+jobs:
+  check_matrix_works:
+    name: Check matrix works
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(inputs.matrix) }}
+    steps:
+      - name: Check matrix
+        run: |
+          echo "Matrix: ${{ matrix }}"
+          echo "Matrix.service: ${{ matrix.service }}"
