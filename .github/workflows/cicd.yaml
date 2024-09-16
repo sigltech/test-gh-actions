@@ -4,26 +4,61 @@ on:
   workflow_dispatch:
     inputs:
       matrix:
-        description: 'services to deploy, as an array like this: ["service1", "service2"]'
-        required: true
+        description: 'services to deploy, as an array like this: ["service1", "service2"]. Must not be empty if rebuild changeset is selected'
+        required: false
         type: string
       test-bool:
         description: 'Rebuild changeset'
         required: true
         type: boolean
-        default: true
+        default: false
       rebuild-all:
         description: 'Rebuild all services'
         required: true
         type: boolean
         default: false
 jobs:
+
+  parseMatrix:
+    name: Parse matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.parseMatrix.outputs.matrix }}
+    steps:
+      - name: Parse matrix
+        id: parseMatrix
+        run: |
+          if [ "${{ inputs.rebuild-all }}" = "true" ]; then
+            matrix="[\"service1\", \"service2\"]"
+            echo "::set-output name=matrix::${matrix}"
+            for service in $matrix; do
+              echo "::set-output name=service::true"
+            done
+          else
+            echo "::set-output name=matrix::${{ inputs.matrix }}"
+            for service in ${{ inputs.matrix }}; do
+              echo "::set-output name=service::true"
+            done
+          fi
+
+  check_parse_outputs:
+    name: Check parse outputs
+    runs-on: ubuntu-latest
+    needs:
+      - parseMatrix
+    steps:
+      - name: Check parse outputs
+        run: |
+          echo "Matrix: ${{ needs.parseMatrix.outputs.matrix }}"
+
   check_matrix_works:
     name: Check matrix works
     runs-on: ubuntu-latest
+    needs:
+      - parseMatrix
     strategy:
       matrix:
-        service: ${{ fromJSON(inputs.matrix) }}
+        service: ${{ fromJSON(needs.parseMatrix.outputs.matrix) }}
     steps:
       - name: Check matrix
         run: |
